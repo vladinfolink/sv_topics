@@ -1,0 +1,83 @@
+version: "3"
+
+services:
+  react-app:
+    image: react-app-dev
+    stdin_open: true
+    ports:
+      - "3000:3000"
+    networks:
+      - mern-app
+    volumes:
+      - ./client/:/usr/src/app
+      - /usr/src/app/node_modules
+  api-server:
+    image: api-server
+    env_file: ./server/config/dev.env
+    ports:
+      - "5000:5000"
+    networks:
+      - mern-app
+    volumes:
+      - ./server/:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - mongo
+  mongo:
+    image: mongo:4.4-bionic
+    ports:
+      - "27017:27017"
+    networks:
+      - mern-app
+      # Decomment for persistance:
+    volumes:
+      - mongo-data:/data/db
+  lb:
+      image: haproxy
+      ports:
+          - "8080:8080"
+      networks:
+        - mern-app
+      volumes:
+          - ./ws-live-chat-system/haproxy:/usr/local/etc/haproxy
+  ws1:
+      image: wsapp
+      networks:
+        - mern-app
+      environment:
+          - APPID=1111
+  ws2:
+      image: wsapp
+      networks:
+        - mern-app
+      environment:
+          - APPID=2222
+  ws3:
+      image: wsapp
+      networks:
+        - mern-app
+      environment:
+          - APPID=3333
+  ws4:
+      image: wsapp
+      networks:
+        - mern-app
+      environment:
+          - APPID=4444
+  # rds:
+  #     image: redis
+      # ----------------------
+  redis:
+    container_name: redis
+    image: redis
+    hostname: redis
+    networks:
+      - mern-app
+
+
+networks:
+  mern-app:
+    driver: bridge
+volumes:
+  mongo-data:
+    driver: local

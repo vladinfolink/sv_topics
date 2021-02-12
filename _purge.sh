@@ -1,0 +1,1 @@
+sudo docker system prune -a && sudo docker system df && sudo docker system prune --volumes

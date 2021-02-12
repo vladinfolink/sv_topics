@@ -1,0 +1,1 @@
+sudo make build-dev && sudo make run-dev
